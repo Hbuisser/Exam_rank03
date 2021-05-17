@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include <unistd.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 typedef struct s_zone
 {
@@ -44,6 +44,8 @@ int free_all(FILE *file, char *draw)
     return (1);
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////
+
 int check_zone(t_zone *zone)
 {
     return ((zone->width >= 0 && zone->width <= 300) && (zone->height >= 0 && zone->height <= 300));
@@ -62,6 +64,8 @@ char *get_zone(FILE *file, t_zone *zone)
     if (!(check_zone(zone)))
         return (NULL);
     array = (char *)malloc(sizeof(char) * (zone->width * zone->height));
+    if (!(array))
+        return (NULL);
     while (i < zone->width * zone->height)
     {
         array[i] = zone->background;
@@ -69,6 +73,8 @@ char *get_zone(FILE *file, t_zone *zone)
     }
     return (array);
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
 
 int check_tmp(t_list *tmp)
 {
@@ -122,6 +128,8 @@ int drawing(FILE *file, char **draw, t_zone *zone)
     return (1);
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void print_draw(char *draw, t_zone *zone)
 {
     int i = 0;
@@ -144,12 +152,14 @@ int main(int ac, char **av)
         return (fail("Error: wrong argument\n"));
     if (!(file = fopen(av[1], "r")))
         return (fail("Error: Operation file corrupted\n"));
+    //////////////////////////////////////////////////////// 2
     if (!(draw = get_zone(file, &zone)))
         return (free_all(file, NULL) && fail("Error: Operation file corrupted\n"));
+    //////////////////////////////////////////////////////// 4
     if (!(drawing(file, &draw, &zone)))
         return (free_all(file, draw) && fail("Error: Operation file corrupted\n"));
+    ////////////////////////////////////////////////////////
     print_draw(draw, &zone);
     free_all(file, draw);
-    printf("End\n");
     return (0);
 }
