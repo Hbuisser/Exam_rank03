@@ -84,6 +84,7 @@ int check_tmp(t_list *tmp)
 int is_rec(float y, float x, t_list *tmp)
 {
     float check = 1.00000000;
+    
     if ((x < tmp->x) || (tmp->x + tmp->width < x) || (y < tmp->y) || (tmp->y + tmp->height < y))
         return (0);
     if (((x - tmp->x) < check) || ((tmp->x + tmp->width) - x < check) || ((y - tmp->y) < check) || ((tmp->y + tmp->height) - y < check))
@@ -91,7 +92,7 @@ int is_rec(float y, float x, t_list *tmp)
     return (1);
 }
 
-void get_draw(char **draw, t_list *tmp, t_zone *zone)
+void get_draw(char *draw, t_list *tmp, t_zone *zone)
 {
     int x;
     int y;
@@ -103,16 +104,16 @@ void get_draw(char **draw, t_list *tmp, t_zone *zone)
         x = 0;
         while (x < zone->width)
         {
-            rec = is_rec(y, x, tmp);
+            rec = is_rec((float)y, (float)x, tmp);
             if ((tmp->type == 'r' && rec == 2) || (tmp->type == 'R' && rec))
-                (*draw)[(y * zone->width) + x] = tmp->color;
+                draw[(y * zone->width) + x] = tmp->color;
             x++;
         }
         y++;
     }
 }
 
-int drawing(FILE *file, char **draw, t_zone *zone)
+int drawing(FILE *file, char *draw, t_zone *zone)
 {
     t_list tmp;
     int count;
@@ -152,11 +153,11 @@ int main(int ac, char **av)
         return (fail("Error: wrong argument\n"));
     if (!(file = fopen(av[1], "r")))
         return (fail("Error: Operation file corrupted\n"));
-    //////////////////////////////////////////////////////// 2
+    //////////////////////////////////////////////////////// 
     if (!(draw = get_zone(file, &zone)))
         return (free_all(file, NULL) && fail("Error: Operation file corrupted\n"));
-    //////////////////////////////////////////////////////// 4
-    if (!(drawing(file, &draw, &zone)))
+    ////////////////////////////////////////////////////////
+    if (!(drawing(file, draw, &zone)))
         return (free_all(file, draw) && fail("Error: Operation file corrupted\n"));
     ////////////////////////////////////////////////////////
     print_draw(draw, &zone);

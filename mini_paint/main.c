@@ -167,3 +167,11 @@ int main(int ac, char **av)
     free_all(file, draw);
     return (0);
 }
+
+
+
+
+
+
+
+
